@@ -1,4 +1,5 @@
-pillow
 numpy
 matplotlib
 scipy
+Pillow
+opencv-python

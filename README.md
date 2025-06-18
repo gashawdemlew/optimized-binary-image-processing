@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-This project provides a highly optimized Python solution for performing fundamental morphological operations (specifically **binary erosion** and **binary dilation**) on collections of images. Designed with performance in mind, it efficiently processes numerous images by leveraging parallel computing and optimized numerical libraries.
+This project provides a highly optimized Python solution for performing fundamental morphological operations (specifically **binary erosion** and **binary dilation**) on collections of images. Designed with performance in mind, it efficiently processes numerous images by leveraging parallel computing and optimized numerical libraries, now primarily utilizing **OpenCV** for its core image processing functions.
 
 ## Features
 
-* **Core Operations**: Implements both binary dilation and erosion.
+* **Core Operations**: Implements both binary dilation and erosion using `cv2` (OpenCV).
 * **Flexible Kernel**: Supports square kernels of any odd size (e.g., 3x3, 5x5, 7x7).
 * **Automated Image Handling**:
     * Reads input images from an `unprocessed_images` directory.
@@ -14,7 +14,7 @@ This project provides a highly optimized Python solution for performing fundamen
     * Automatically converts input images (color or grayscale) into a standardized binary format (0s and 1s) using a threshold, ensuring compatibility with morphological operations.
 * **Performance Optimization**: Achieves significant speedups through:
     * **Multiprocessing**: Distributes image processing tasks across multiple CPU cores for parallel execution.
-    * **Efficient Array Operations**: Utilizes highly optimized `NumPy` and `SciPy` libraries, which are implemented in low-level languages (C/Fortran) and leverage **SIMD instructions** for rapid array computations.
+    * **Efficient Array Operations**: Utilizes highly optimized `NumPy` and `OpenCV` (which itself heavily relies on optimized C++ code) for rapid array computations. OpenCV's functions leverage underlying efficient algorithms and **SIMD instructions** for speed.
 
 ## How Optimization Works
 
@@ -29,11 +29,11 @@ The solution employs a powerful two-pronged approach to maximize performance:
 
 2.  ### Efficient Array Operations (Per-Image Speed)
 
-    At the heart of the morphological transformations (`scipy.ndimage.binary_dilation` and `scipy.ndimage.binary_erosion`) are `SciPy`'s highly optimized functions. These functions, built upon `NumPy` arrays, are crucial because:
-    * **Compiled Code**: `NumPy` and `SciPy` are predominantly written in C and Fortran. This means the actual pixel-level operations are executed as compiled, native code, which is vastly faster than equivalent operations written purely in Python.
-    * **SIMD Instructions**: These low-level implementations are designed to exploit **SIMD (Single Instruction, Multiple Data) instructions** available on modern CPUs. SIMD allows a single CPU instruction to perform the same operation on multiple data elements (e.g., pixels) simultaneously. This is a fundamental acceleration for array-based computations.
+    At the heart of the morphological transformations (`cv2.dilate` and `cv2.erode`) are OpenCV's highly optimized functions. These functions, built to operate on `NumPy` arrays, are crucial because:
+    * **Compiled C++ Code**: OpenCV is primarily written in optimized C++. This means the actual pixel-level operations are executed as highly efficient, compiled native code, which is significantly faster than equivalent operations written purely in Python.
+    * **SIMD Instructions**: OpenCV's routines are designed to exploit **SIMD (Single Instruction, Multiple Data) instructions** available on modern CPUs. SIMD allows a single CPU instruction to perform the same operation on multiple data elements (e.g., pixels) simultaneously. This is a fundamental acceleration for array-based computations.
 
-In essence, `multiprocessing` accelerates the *overall processing of multiple images* by running tasks in parallel, while `NumPy` and `SciPy` ensure that *each individual image transformation* is executed with maximum speed by leveraging highly optimized, compiled code that fully utilizes modern CPU capabilities, including SIMD.
+In essence, `multiprocessing` accelerates the *overall processing of multiple images* by running tasks in parallel, while `NumPy` and `OpenCV` ensure that *each individual image transformation* is executed with maximum speed by leveraging highly optimized, compiled code that fully utilizes modern CPU capabilities, including SIMD.
 
 ## Getting Started
 
@@ -92,4 +92,4 @@ To initiate the test harness:
 
 ```bash
 python test_harness.py
-ConfigurationYou can easily customize the behavior of the image processing pipeline by modifying parameters within the main() function of test_harness.py:image_shape: Defines the dimensions (height, width) of the images.image_density: Controls the density of '1' pixels in randomly generated images.num_images_to_generate: Specifies how many random images the script will create in unprocessed_images.kernel_size: Sets the size of the square kernel (e.g., 3 for a 3x3 kernel). Must be an odd number.operation_type: Choose between 'dilation' or 'erosion'.num_processes: Determines the number of parallel processes to utilize. Set to None to automatically use all available CPU cores.unprocessed_dir: The name of the input directory for raw images.processed_dir: The name of the output directory for processed images.Example OutputUpon successful execution of python test_harness.py, you will observe detailed progress and timing information in your terminal. Simultaneously, a Matplotlib window will appear, showcasing selected original and processed image pairs. The results will also be saved as PNG files within the processed_images folder.ContributingContributions are welcome! Feel free to open issues to report bugs or suggest features, or submit pull requests with improvements.LicenseThis project is open-sourced under the MIT License
+ConfigurationYou can easily customize the behavior of the image processing pipeline by modifying parameters within the main() function of test_harness.py:image_shape: Defines the dimensions (height, width) of the images.image_density: Controls the density of '1' pixels in randomly generated images.num_images_to_generate: Specifies how many random images the script will create in unprocessed_images.kernel_size: Sets the size of the square kernel (e.g., 3 for a 3x3 kernel). Must be an odd number.operation_type: Choose between 'dilation' or 'erosion'.num_processes: Determines the number of parallel processes to utilize. Set to None to automatically use all available CPU cores.unprocessed_dir: The name of the input directory for raw images.processed_dir: The name of the output directory for processed images.Example OutputUpon successful execution of python test_harness.py, you will observe detailed progress and timing information in your terminal. Simultaneously, a Matplotlib window will appear, showcasing selected original and processed image pairs. The results will also be saved as PNG files within the processed_images folder.ContributingContributions are welcome! Feel free to open issues to report bugs or suggest features, or submit pull requests
